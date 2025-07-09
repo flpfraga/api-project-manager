@@ -75,9 +75,9 @@ public class Project {
 
     public ERiskClassification getRisk() {
         long days = ChronoUnit.DAYS.between(this.startDate, this.expectedEndDate);
-        if (MIN_BUDGET_RISK_HIGH.compareTo(this.getTotal()) > 0 || days > MIN_DAYS_RISK_HIGH) {
+        if (MIN_BUDGET_RISK_HIGH.compareTo(this.getTotal()) < 0 || days > MIN_DAYS_RISK_HIGH) {
             return ERiskClassification.HIGH;
-        } else if (MAX_BUDGET_RISK_LOW.compareTo(this.getTotal()) < 0 && days <= MAX_DAYS_RISK_LOW) {
+        } else if (MAX_BUDGET_RISK_LOW.compareTo(this.getTotal()) > 0 && days <= MAX_DAYS_RISK_LOW) {
             return ERiskClassification.LOW;
         }
         return ERiskClassification.MEDIUM;
