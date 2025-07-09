@@ -5,12 +5,15 @@ import com.fraga.projectManager.data.enums.EStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.fraga.projectManager.constants.RiskConstants.*;
 
 @Data
 @Entity
@@ -65,16 +68,16 @@ public class Project {
 
     public void setStatus(EStatus status) {
         this.status = status;
-        if (EStatus.finalStatus().contains(status)) {
+        if (!ObjectUtils.isEmpty(status) && EStatus.finalStatus().contains(status)) {
             this.realEndDate = LocalDate.now();
         }
     }
 
     public ERiskClassification getRisk() {
-        long months = ChronoUnit.MONTHS.between(this.startDate, this.expectedEndDate);
-        if (this.getTotal().compareTo(new BigDecimal("500000")) > 0 || months > 6) {
+        long days = ChronoUnit.DAYS.between(this.startDate, this.expectedEndDate);
+        if (MIN_BUDGET_RISK_HIGH.compareTo(this.getTotal()) > 0 || days > MIN_DAYS_RISK_HIGH) {
             return ERiskClassification.HIGH;
-        } else if (this.getTotal().compareTo(new BigDecimal("100000")) < 0 || months <= 3) {
+        } else if (MAX_BUDGET_RISK_LOW.compareTo(this.getTotal()) < 0 && days <= MAX_DAYS_RISK_LOW) {
             return ERiskClassification.LOW;
         }
         return ERiskClassification.MEDIUM;
