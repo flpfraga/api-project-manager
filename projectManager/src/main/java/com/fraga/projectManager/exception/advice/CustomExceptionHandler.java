@@ -40,6 +40,12 @@ public class CustomExceptionHandler {
         return errorResponseEntity(HttpStatus.BAD_REQUEST, Arrays.toString(ex.getDetailMessageArguments()));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException ex) {
+        log.error("Illegal state: {}", ex, ex);
+        return errorResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+    }
+
     private ResponseEntity<ErrorResponse> errorResponseEntity(HttpStatus httpStatus, String message) {
         final ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(message);

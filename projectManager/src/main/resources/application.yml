@@ -42,8 +42,8 @@ spring:
 
   docker:
     compose:
-          enabled: true
-          file: docker-compose.yaml
+      enabled: true
+      file: compose.yaml
 
 #--------------CACHE CONFIG-----------
 cache:

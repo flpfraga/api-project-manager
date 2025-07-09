@@ -1,5 +1,6 @@
 package com.fraga.projectManager.data.model;
 
+import com.fraga.projectManager.data.enums.ERiskClassification;
 import com.fraga.projectManager.data.enums.EStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.UUID;
 
@@ -66,6 +68,16 @@ public class Project {
         if (EStatus.finalStatus().contains(status)) {
             this.realEndDate = LocalDate.now();
         }
+    }
+
+    public ERiskClassification getRisk() {
+        long months = ChronoUnit.MONTHS.between(this.startDate, this.expectedEndDate);
+        if (this.getTotal().compareTo(new BigDecimal("500000")) > 0 || months > 6) {
+            return ERiskClassification.HIGH;
+        } else if (this.getTotal().compareTo(new BigDecimal("100000")) < 0 || months <= 3) {
+            return ERiskClassification.LOW;
+        }
+        return ERiskClassification.MEDIUM;
     }
 
 }

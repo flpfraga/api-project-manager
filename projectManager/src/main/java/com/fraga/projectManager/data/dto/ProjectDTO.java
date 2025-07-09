@@ -2,6 +2,7 @@ package com.fraga.projectManager.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fraga.projectManager.data.enums.EStatus;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -34,6 +35,7 @@ public class ProjectDTO {
 
     @JsonProperty("orcamento_total")
     @NotNull(message = "Total budget is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Total budget must be greater than zero")
     private BigDecimal total;
 
     @JsonProperty(value = "gerente_responsavel", access = JsonProperty.Access.WRITE_ONLY)

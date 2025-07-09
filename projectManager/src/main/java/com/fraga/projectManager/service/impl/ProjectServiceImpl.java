@@ -1,6 +1,8 @@
 package com.fraga.projectManager.service.impl;
 
 import com.fraga.projectManager.data.dto.ProjectDTO;
+import com.fraga.projectManager.data.dto.ProjectRelatoryDTO;
+import com.fraga.projectManager.data.enums.ERiskClassification;
 import com.fraga.projectManager.data.model.Member;
 import com.fraga.projectManager.data.model.Project;
 import com.fraga.projectManager.data.enums.EStatus;
@@ -13,10 +15,11 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.fraga.projectManager.constants.MemberAllocationConstants.MAX_ALLOCATIONS_MEMBER;
@@ -132,7 +135,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toSet());
 
         entity.removeExistingMembers(canditateMembers);
-        if (canditateMembers.isEmpty()){
+        if (canditateMembers.isEmpty()) {
             return mapper.map(entity, ProjectDTO.class);
         }
 
@@ -149,8 +152,63 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private Project getProject(UUID projectId) {
-       return projectRepository.findById(projectId)
+        return projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
+    }
+
+    @Override
+    public ERiskClassification evaluateProjectRisk(UUID projectId) {
+        var entity = getProject(projectId);
+        if (ObjectUtils.isEmpty(entity.getTotal())) {
+            throw new IllegalStateException("The project does not have a total cost defined, cannot evaluate risk.");
+        }
+        return entity.getRisk();
+    }
+
+    @Override
+    public ProjectRelatoryDTO getProjectsRelatory() {
+        List<Project> projects = projectRepository.findAll();
+        if (projects.isEmpty()) {
+            throw new ResourceNotFoundException("No projects found for relatory.");
+        }
+        ProjectRelatoryDTO relatory = new ProjectRelatoryDTO();
+        relatory.setProjectsByStatus(getStatusCount(projects));
+        relatory.setTotalByStatus(getTotalByStatus(projects));
+        relatory.setAverageDurationOfFinishedProjects(getAverageDurationOfFinishedProjects(projects));
+        relatory.setTotalMembersOnlyOneProject(getTotalMembersOnlyOneProject(projects));
+
+        return relatory;
+    }
+
+    private Map<EStatus, Long> getStatusCount(List<Project> projects) {
+        return projects.stream()
+                .collect(Collectors.groupingBy(Project::getStatus, Collectors.counting()));
+    }
+
+    private Map<EStatus, BigDecimal> getTotalByStatus(List<Project> projects) {
+        return projects.stream()
+                .collect(Collectors.groupingBy(Project::getStatus,
+                        Collectors.reducing(
+                                BigDecimal.ZERO,
+                                Project::getTotal,
+                                BigDecimal::add)));
+    }
+
+    private Double getAverageDurationOfFinishedProjects(List<Project> projects) {
+        return projects.stream()
+                .filter(project -> EStatus.finalStatus().contains(project.getStatus()))
+                .mapToLong(project -> ChronoUnit.DAYS.between(project.getStartDate(), project.getRealEndDate()))
+                .average()
+                .orElse(0L);
+    }
+
+    private Long getTotalMembersOnlyOneProject(List<Project> projects) {
+        return projects.stream()
+                .flatMap(project -> project.getProjectManager().stream())
+                .collect(Collectors.groupingBy(Member::getId, Collectors.counting()))
+                .values().stream()
+                .filter(count -> count == 1)
+                .count();
     }
 
 }

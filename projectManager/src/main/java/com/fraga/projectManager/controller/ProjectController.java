@@ -3,12 +3,14 @@ package com.fraga.projectManager.controller;
 import com.fraga.projectManager.controller.defaultController.DefaultController;
 import com.fraga.projectManager.controller.defaultController.DefaultResponse;
 import com.fraga.projectManager.data.dto.ProjectDTO;
+import com.fraga.projectManager.data.enums.ERiskClassification;
 import com.fraga.projectManager.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Set;
 import java.util.UUID;
 // OpenAPI imports
@@ -29,7 +31,7 @@ public class ProjectController implements DefaultController {
     public ResponseEntity<DefaultResponse<ProjectDTO>> create(
             @Valid
             @RequestBody ProjectDTO projectDTO
-            ) {
+    ) {
         return success(projectService.create(projectDTO));
     }
 
@@ -97,4 +99,17 @@ public class ProjectController implements DefaultController {
     ) {
         return success(projectService.addMembers(projectId, memberNames));
     }
+
+    @GetMapping("/project-risk/{projectId}")
+    public ResponseEntity<DefaultResponse<ERiskClassification>> evaluateProjectRisk(
+            @PathVariable UUID projectId
+    ) {
+        return success(projectService.evaluateProjectRisk(projectId));
+    }
+
+    @GetMapping("/projects-relatory")
+    public ResponseEntity<DefaultResponse<ERiskClassification>> getProjectsRelatory() {
+        return success(projectService.getProjectsRelatory());
+    }
+
 }

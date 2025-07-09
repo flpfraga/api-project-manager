@@ -1,6 +1,8 @@
 package com.fraga.projectManager.service;
 
 import com.fraga.projectManager.data.dto.ProjectDTO;
+import com.fraga.projectManager.data.dto.ProjectRelatoryDTO;
+import com.fraga.projectManager.data.enums.ERiskClassification;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
@@ -67,4 +69,8 @@ public interface ProjectService {
      * @return the updated ProjectDTO
      */
     ProjectDTO addMembers(UUID projectId, Set<String> memberNames);
+
+    ERiskClassification evaluateProjectRisk(UUID projectId);
+
+    ProjectRelatoryDTO getProjectsRelatory();
 }
