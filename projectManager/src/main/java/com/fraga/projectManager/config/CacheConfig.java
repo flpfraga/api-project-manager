@@ -2,11 +2,9 @@ package com.fraga.projectManager.config;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fraga.projectManager.data.dto.MemberDTO;
-import com.fraga.projectManager.data.entity.Member;
-import com.fraga.projectManager.data.entity.Project;
+import com.fraga.projectManager.data.model.Member;
+import com.fraga.projectManager.data.model.Project;
 import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

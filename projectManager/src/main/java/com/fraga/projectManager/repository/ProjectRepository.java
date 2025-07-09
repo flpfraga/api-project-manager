@@ -1,6 +1,6 @@
 package com.fraga.projectManager.repository;
 
-import com.fraga.projectManager.data.entity.Project;
+import com.fraga.projectManager.data.model.Project;
 import com.fraga.projectManager.data.enums.EStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 

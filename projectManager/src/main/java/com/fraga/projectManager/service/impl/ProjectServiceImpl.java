@@ -1,8 +1,8 @@
 package com.fraga.projectManager.service.impl;
 
 import com.fraga.projectManager.data.dto.ProjectDTO;
-import com.fraga.projectManager.data.entity.Member;
-import com.fraga.projectManager.data.entity.Project;
+import com.fraga.projectManager.data.model.Member;
+import com.fraga.projectManager.data.model.Project;
 import com.fraga.projectManager.data.enums.EStatus;
 import com.fraga.projectManager.exception.IlegalArgumentException;
 import com.fraga.projectManager.exception.ResourceNotFoundException;
@@ -34,27 +34,22 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO create(ProjectDTO projectDTO) {
         var memberClient = memberService.getValidProjectMemberByName(projectDTO.getManagerName());
 
-        var entity = mapper.map(projectDTO, Project.class);
-        entity.setProjectManager(new HashSet<>());
+        var projectEntity = mapper.map(projectDTO, Project.class);
+        projectEntity.setProjectManager(new HashSet<>());
 
-        allocationMemberIsValid(entity, memberClient, findProjectsValidStatus());
+        verifyMemberCanBeAllocade(projectEntity, memberClient, findProjectsNotFinalStatus());
 
-        entity.setStatus(EStatus.IN_ANALISIS);
+        projectEntity.setStatus(EStatus.IN_ANALISIS);
 
         Member savedMember = memberService.upsert(memberClient);
-        entity.getProjectManager().add(savedMember);
+        projectEntity.getProjectManager().add(savedMember);
 
-        var project = projectRepository.save(entity);
+        var project = projectRepository.save(projectEntity);
 
         return mapper.map(project, ProjectDTO.class);
     }
 
-    private Boolean allocationMemberIsValid(Project project, Member member, Set<Project> projectsValidStatus) {
-        if (project.getProjectManager().size() >= MAX_ALLOCATION_MEMBER_IN_PROJECT) {
-            throw new IlegalArgumentException("Project has reached the maximum number of allocations"
-                    + MAX_ALLOCATION_MEMBER_IN_PROJECT);
-        }
-
+    private Boolean verifyMemberCanBeAllocade(Project project, Member member, Set<Project> projectsValidStatus) {
         Long memberAllocation = project.countActiveAllocationsByMember(member, projectsValidStatus);
         if (memberAllocation >= MAX_ALLOCATIONS_MEMBER) {
             throw new IlegalArgumentException("Member " + member.getName() +
@@ -63,15 +58,8 @@ public class ProjectServiceImpl implements ProjectService {
         return true;
     }
 
-    private Set<Project> findProjectsValidStatus() {
-        return projectRepository.findByStatusIn(
-                Set.of(EStatus.IN_PROGRESS,
-                        EStatus.IN_ANALISIS,
-                        EStatus.STARTED,
-                        EStatus.DO_ANALISIS,
-                        EStatus.PLANNED,
-                        EStatus.APROVED_ANALISIS)
-        );
+    private Set<Project> findProjectsNotFinalStatus() {
+        return projectRepository.findByStatusIn(EStatus.notFinalStatus());
     }
 
     @Override
@@ -114,8 +102,9 @@ public class ProjectServiceImpl implements ProjectService {
         var entity = getProject(projectId);
 
         EStatus status = entity.getStatus();
-        if (EStatus.CANCELLED.equals(status) || EStatus.COMPLETED.equals(status)) {
-            throw new IlegalArgumentException("Cannot change status of a project that is already completed or cancelled");
+        if (EStatus.finalStatus().contains(status)) {
+            throw new IlegalArgumentException(
+                    "Cannot change status of a project that is already completed or cancelled");
         }
         entity.upStatus();
         projectRepository.save(entity);
@@ -136,12 +125,13 @@ public class ProjectServiceImpl implements ProjectService {
         var entity = getProject(projectId);
 
         Set<Member> members = memberService.getMembers(memberNames);
-        Set<Project> projectsValidStatus = findProjectsValidStatus();
-        Set<Member> canditateMembers = members.stream()
-                .filter(member -> allocationMemberIsValid(entity, member, projectsValidStatus))
-                .collect(Collectors.toSet());
-        entity.removeExistingMembers(canditateMembers);
+        Set<Project> projectsValidStatus = findProjectsNotFinalStatus();
 
+        Set<Member> canditateMembers = members.stream()
+                .filter(member -> verifyMemberCanBeAllocade(entity, member, projectsValidStatus))
+                .collect(Collectors.toSet());
+
+        entity.removeExistingMembers(canditateMembers);
         if (canditateMembers.isEmpty()){
             return mapper.map(entity, ProjectDTO.class);
         }

@@ -1,7 +1,7 @@
 package com.fraga.projectManager.service;
 
 import com.fraga.projectManager.data.dto.MemberDTO;
-import com.fraga.projectManager.data.entity.Member;
+import com.fraga.projectManager.data.model.Member;
 
 import java.util.Set;
 

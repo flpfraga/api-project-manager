@@ -1,6 +1,6 @@
 package com.fraga.projectManager.httpClient.member;
 
-import com.fraga.projectManager.data.entity.Member;
+import com.fraga.projectManager.data.model.Member;
 import com.fraga.projectManager.exception.HttpClientException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;

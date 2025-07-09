@@ -1,7 +1,7 @@
 package com.fraga.projectManager.config;
 
 import com.fraga.projectManager.data.dto.ProjectDTO;
-import com.fraga.projectManager.data.entity.Project;
+import com.fraga.projectManager.data.model.Project;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

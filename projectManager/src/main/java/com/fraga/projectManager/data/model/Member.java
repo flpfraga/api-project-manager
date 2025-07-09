@@ -1,4 +1,4 @@
-package com.fraga.projectManager.data.entity;
+package com.fraga.projectManager.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

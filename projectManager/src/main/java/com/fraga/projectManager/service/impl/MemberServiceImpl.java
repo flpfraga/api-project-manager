@@ -1,7 +1,7 @@
 package com.fraga.projectManager.service.impl;
 
 import com.fraga.projectManager.data.dto.MemberDTO;
-import com.fraga.projectManager.data.entity.Member;
+import com.fraga.projectManager.data.model.Member;
 import com.fraga.projectManager.data.enums.EFunction;
 import com.fraga.projectManager.exception.ResourceNotFoundException;
 import com.fraga.projectManager.httpClient.member.MemberHttpClient;

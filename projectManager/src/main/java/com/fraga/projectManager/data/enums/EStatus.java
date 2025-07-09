@@ -2,6 +2,8 @@ package com.fraga.projectManager.data.enums;
 
 import lombok.Getter;
 
+import java.util.Set;
+
 @Getter
 public enum EStatus {
     IN_ANALISIS("In analisis", "DO_ANALISIS"),
@@ -23,6 +25,14 @@ public enum EStatus {
 
     public EStatus getNext() {
         return EStatus.valueOf(next.toUpperCase());
+    }
+
+    public static Set<EStatus> notFinalStatus() {
+        return Set.of(IN_ANALISIS, DO_ANALISIS, APROVED_ANALISIS, STARTED, PLANNED, IN_PROGRESS);
+    }
+
+    public static Set<EStatus> finalStatus() {
+        return Set.of(COMPLETED, CANCELLED);
     }
 
 }

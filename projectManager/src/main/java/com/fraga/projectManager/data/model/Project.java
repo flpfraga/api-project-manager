@@ -1,4 +1,4 @@
-package com.fraga.projectManager.data.entity;
+package com.fraga.projectManager.data.model;
 
 import com.fraga.projectManager.data.enums.EStatus;
 import jakarta.persistence.*;
@@ -63,7 +63,7 @@ public class Project {
 
     public void setStatus(EStatus status) {
         this.status = status;
-        if (EStatus.CANCELLED.equals(status) || EStatus.COMPLETED.equals(status)) {
+        if (EStatus.finalStatus().contains(status)) {
             this.realEndDate = LocalDate.now();
         }
     }
