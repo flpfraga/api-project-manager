@@ -2,7 +2,7 @@
 
 ## Descrição geral da aplicação
 
-O **Project Manager** é uma API desenvolvida em Spring Boot para o gerenciamento de projetos e membros. Ela permite criar, consultar, atualizar, deletar projetos, gerenciar membros, alocar membros em projetos, alterar status e cancelar projetos. A aplicação é voltada para facilitar o controle de times, alocação de pessoas e o acompanhamento do ciclo de vida dos projetos.
+O **Project Manager** é uma API desenvolvida em Spring Boot para o gerenciamento de projetos e membros. Ela permite criar, consultar, atualizar, deletar projetos, gerenciar membros, alocar membros em projetos, alterar status, cancelar projetos, analisar risco e obter relatórios consolidados. A aplicação é voltada para facilitar o controle de times, alocação de pessoas e o acompanhamento do ciclo de vida dos projetos.
 
 ---
 
@@ -120,6 +120,12 @@ Usuário (cliente HTTP)
 
 - `POST /api/v1/projects/project-members/{projectId}`  
   Adiciona membros a um projeto.
+
+- `GET /api/v1/projects/project-risk/{projectId}`  
+  **Novo:** Retorna a classificação de risco do projeto (baixo, médio, alto).
+
+- `GET /api/v1/projects/projects-relatory`  
+  **Novo:** Retorna um relatório consolidado dos projetos.
 
 ---
 
