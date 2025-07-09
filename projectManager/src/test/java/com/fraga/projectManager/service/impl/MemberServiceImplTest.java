@@ -132,7 +132,17 @@ class MemberServiceImplTest {
     }
 
     @Test
-    void getValidMemberByName_shouldThrow_whenNotFound() throws Throwable {
+    void testGetMemberByNameExceptionNullMember() {
+        when(memberHttpClient.getMemberByName("Test Member")).thenReturn(null);
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                memberService.getValidProjectMemberByName("Test Member")
+        );
+
+    }
+
+    @Test
+    void testGetMemberByNameExceptionClientReturn() throws Throwable {
         when(memberHttpClient.getMemberByName("X")).thenReturn(Mono.error(new RuntimeException()));
 
         assertThrows(ResourceNotFoundException.class, () -> {
