@@ -3,6 +3,7 @@ package com.fraga.projectManager.controller;
 import com.fraga.projectManager.controller.defaultController.DefaultController;
 import com.fraga.projectManager.controller.defaultController.DefaultResponse;
 import com.fraga.projectManager.data.dto.ProjectDTO;
+import com.fraga.projectManager.data.dto.ProjectRelatoryDTO;
 import com.fraga.projectManager.data.enums.ERiskClassification;
 import com.fraga.projectManager.service.ProjectService;
 import jakarta.validation.Valid;
@@ -108,7 +109,7 @@ public class ProjectController implements DefaultController {
     }
 
     @GetMapping("/projects-relatory")
-    public ResponseEntity<DefaultResponse<ERiskClassification>> getProjectsRelatory() {
+    public ResponseEntity<DefaultResponse<ProjectRelatoryDTO>> getProjectsRelatory() {
         return success(projectService.getProjectsRelatory());
     }
 
