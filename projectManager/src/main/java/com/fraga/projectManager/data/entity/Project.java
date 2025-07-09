@@ -3,7 +3,6 @@ package com.fraga.projectManager.data.entity;
 import com.fraga.projectManager.data.enums.EStatus;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
