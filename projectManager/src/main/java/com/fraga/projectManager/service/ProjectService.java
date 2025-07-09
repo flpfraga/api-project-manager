@@ -70,7 +70,16 @@ public interface ProjectService {
      */
     ProjectDTO addMembers(UUID projectId, Set<String> memberNames);
 
+    /**
+     * Evaluates the risk classification of a project by its ID.
+     * @param projectId the project unique identifier
+     * @return the risk classification (LOW, MEDIUM, HIGH)
+     */
     ERiskClassification evaluateProjectRisk(UUID projectId);
 
+    /**
+     * Returns a consolidated relatory of all projects.
+     * @return the project relatory DTO
+     */
     ProjectRelatoryDTO getProjectsRelatory();
 }

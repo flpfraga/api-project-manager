@@ -23,6 +23,7 @@ public class ProjectMocks {
         project.setStatus(EStatus.IN_ANALISIS);
         project.setStartDate(LocalDate.parse("2023-01-01"));
         project.setRealEndDate(LocalDate.parse("2023-12-31"));
+        project.setExpectedEndDate(LocalDate.parse("2023-12-31"));
         project.setProjectManager(Set.of(getMockMemberFunctionary()));
         project.setTotal(BigDecimal.TEN);
         return project;

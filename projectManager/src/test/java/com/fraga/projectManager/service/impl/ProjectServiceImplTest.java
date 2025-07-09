@@ -1,19 +1,23 @@
 package com.fraga.projectManager.service.impl;
 
 import com.fraga.projectManager.data.dto.ProjectDTO;
+import com.fraga.projectManager.data.dto.ProjectRelatoryDTO;
+import com.fraga.projectManager.data.enums.ERiskClassification;
+import com.fraga.projectManager.data.enums.EStatus;
 import com.fraga.projectManager.data.model.Member;
 import com.fraga.projectManager.data.model.Project;
-import com.fraga.projectManager.data.enums.EStatus;
 import com.fraga.projectManager.exception.IlegalArgumentException;
 import com.fraga.projectManager.exception.ResourceNotFoundException;
 import com.fraga.projectManager.repository.ProjectRepository;
 import com.fraga.projectManager.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import org.mockito.*;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 
@@ -221,5 +225,39 @@ class ProjectServiceImplTest {
 
         assertThrows(IlegalArgumentException.class, ()->
             projectService.addMembers(id, memberNames));
+    }
+
+    @Test
+    void testEvaluateProjectRiskWithSucess() {
+        UUID id = UUID.randomUUID();
+        Project project = getMockProject();
+
+        when(projectRepository.findById(id)).thenReturn(Optional.of(project));
+        ERiskClassification result = projectService.evaluateProjectRisk(id);
+        assertEquals(ERiskClassification.HIGH, result);
+    }
+
+    @Test
+    void testEvaluateProjectRiskExceptionTotalIsNull() {
+        UUID id = UUID.randomUUID();
+        Project project = getMockProject();
+        project.setTotal(null);
+        when(projectRepository.findById(id)).thenReturn(Optional.of(project));
+        assertThrows(IllegalStateException.class, () -> projectService.evaluateProjectRisk(id));
+    }
+
+    @Test
+    void getProjectsRelatory_shouldReturnRelatory() {
+        Project project = getMockProject();
+        List<Project> projects = List.of(project);
+        when(projectRepository.findAll()).thenReturn(projects);
+        ProjectRelatoryDTO relatory = projectService.getProjectsRelatory();
+        assertNotNull(relatory);
+    }
+
+    @Test
+    void getProjectsRelatory_shouldThrow_whenNoProjects() {
+        when(projectRepository.findAll()).thenReturn(Collections.emptyList());
+        assertThrows(com.fraga.projectManager.exception.ResourceNotFoundException.class, () -> projectService.getProjectsRelatory());
     }
 } 

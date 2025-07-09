@@ -102,13 +102,16 @@ public class ProjectController implements DefaultController {
     }
 
     @GetMapping("/project-risk/{projectId}")
+    @Operation(summary = "Evaluate project risk", description = "Evaluates the risk classification of a project by its ID.")
     public ResponseEntity<DefaultResponse<ERiskClassification>> evaluateProjectRisk(
+            @Parameter(description = "ID of the project", required = true)
             @PathVariable UUID projectId
     ) {
         return success(projectService.evaluateProjectRisk(projectId));
     }
 
     @GetMapping("/projects-relatory")
+    @Operation(summary = "Get projects relatory", description = "Returns a consolidated relatory of all projects.")
     public ResponseEntity<DefaultResponse<ProjectRelatoryDTO>> getProjectsRelatory() {
         return success(projectService.getProjectsRelatory());
     }
