@@ -1,0 +1,18 @@
+{
+  "id": "7eaa8632-9d1f-4486-8d46-664b19842ab6",
+  "priority": 10,
+  "request": {
+    "method": "GET",
+    "urlPattern": "/api/members/member/(.*)"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+        "name": "{{request.path.[3]}}",
+        "function": "FUNCIONARIO"
+    }
+  }
+}

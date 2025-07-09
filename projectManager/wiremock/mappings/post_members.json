@@ -1,0 +1,15 @@
+{
+  "id": "b2f9b38b-9e68-4d95-a48b-e34ad6238cb3",
+  "request": {
+    "method": "POST",
+    "url": "/api/members"
+  },
+  "response": {
+    "status": 201,
+    "body": "{{request.body}}",
+    "transformers": ["response-template"],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

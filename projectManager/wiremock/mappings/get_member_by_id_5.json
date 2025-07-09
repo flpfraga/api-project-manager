@@ -1,0 +1,15 @@
+{
+  "id": "7eaa8632-9d1f-4486-8d46-664b19842ab6",
+  "priority": 4,
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/api/members/member/NOME_2"
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": "Bad Request: Member with name 'NOME_2' already exists"
+  }
+}
